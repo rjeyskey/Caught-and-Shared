@@ -1,3 +1,17 @@
+<p align="center">
+<img src="assets/trust-driven-recs.png" width="700">
+</p>
+
+
+# Caught & Shared
+
+**Website**: https://rjeyskey.github.io/Caught-and-Shared/
+
+**Paper**: caught-and-shared-conscious-control-in-recommender-systems.pdf
+
+A research project exploring conscious control in recommender systems.
+
+
 # Core Implementation Taxonomy
 
 Regardless of the underlying architecture, the Caught & Shared concept can be realized through three universal strategies for injecting mentor influence:
