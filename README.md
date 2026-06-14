@@ -1,16 +1,30 @@
 <p align="center">
-<img src="assets/trust-driven-recs.png" width="700">
+<img src="assets/trust-driven-recs.png">
 </p>
 
 
 # Caught & Shared
 
-**Website**: https://rjeyskey.github.io/Caught-and-Shared/
-
-**Paper**: caught-and-shared-conscious-control-in-recommender-systems.pdf
-
 A research project exploring conscious control in recommender systems.
 
+**Website**: https://rjeyskey.github.io/Caught-and-Shared/
+
+**Paper**: [caught-and-shared-conscious-control-in-recommender-systems.pdf](caught-and-shared-conscious-control-in-recommender-systems.pdf)
+
+
+## The Idea
+
+Modern recommender systems learn from what users do.
+
+Caught & Shared explores a complementary idea:
+
+**What if users could explicitly choose whose taste influences their recommendations?**
+
+Instead of relying solely on implicit signals, users may consciously select mentors — friends, creators, or people they admire — and borrow their perspective.
+
+Choose who influences your recommendations.
+Share taste.
+Build recommendation systems together.
 
 # Core Implementation Taxonomy
 
