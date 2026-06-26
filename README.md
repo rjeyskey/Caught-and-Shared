@@ -11,6 +11,10 @@ A research project exploring conscious control in recommender systems.
 
 **Paper**: [caught-and-shared-conscious-control-in-recommender-systems.pdf](caught-and-shared-conscious-control-in-recommender-systems.pdf)
 
+**Pitch**:
+eng: https://www.youtube.com/watch?v=QtJTm5fp5rY
+rus: https://www.youtube.com/watch?v=O5XaG_wbHDI
+
 
 ## The Idea
 
