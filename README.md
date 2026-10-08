@@ -4,27 +4,25 @@
 
 # Caught & Shared
 
-A research project exploring conscious control in recommender systems.
+*People borrow taste from people. Why shouldn't recommendations?*
 
 **Website**: https://rjeyskey.github.io/Caught-and-Shared/
 
 **Paper**: [caught-and-shared-conscious-control-in-recommender-systems.pdf](caught-and-shared-conscious-control-in-recommender-systems.pdf)
 
-**Pitch**:
-eng: https://www.youtube.com/watch?v=QtJTm5fp5rY
-rus: https://www.youtube.com/watch?v=O5XaG_wbHDI
+**Pitch (2 min)**: eng https://www.youtube.com/watch?v=QtJTm5fp5rY · rus https://www.youtube.com/watch?v=O5XaG_wbHDI
 
 ---
 
-## The Idea
+## What is Caught & Shared?
 
-Modern recommender systems learn from what users do.
+Modern recommendation systems figure you out from what you *do*. They watch your clicks, your searches, your history — and try to guess your taste.
 
-Caught & Shared explores a complementary idea:
+Caught & Shared is a different idea:
 
-**What if users could explicitly choose whose taste influences their recommendations?**
+> **What if you could explicitly choose *whose* taste influences your recommendations?**
 
-Instead of relying solely on implicit signals, users may consciously select mentors — friends, creators, or people they admire — and borrow their perspective.
+You know that friend whose finds are always perfect? Or that person who is *the* authority on sneakers? Instead of hoping an algorithm figures you out, you just **borrow their taste** — pick the person, pick how strongly their taste mixes into yours, and your feed follows. No retraining anything, no changing the engine. A layer on top, a dial in your hand.
 
 Choose who influences your recommendations.
 Share taste.
@@ -32,123 +30,106 @@ Build recommendation systems together.
 
 ---
 
-## Implementation (the short version)
+## How it works (in plain words)
 
-The experimental seed that proves the mechanism lives in **`code-ground-truth/`** (this repository = research + pitch artifacts).
+1. **You pick a mentor** — a person whose taste you trust (a friend, a creator, someone you admire).
+2. **You set the strength** — how much of their taste comes into your feed:
+   - **Light (20%)** — a gentle nudge toward their style
+   - **Balanced (45%)** — a real mix of both tastes
+   - **Deep (70%)** — strong immersion into their world
+3. **You watch your feed shift** — and you can always pull back. One tap returns you to "pure me" (your old feed, exactly as it was). Every setting is visible, adjustable, and reversible.
 
-- **Core (importable, tested):** `src/cs_core/`
-  - `blend.py` — `LensOperator` seam + `EmbeddingBlend`: `final = (1-Σα)·user + Σ(α_i·mentor_i)` at the retrieval boundary. α=0 ⇒ identical output (rollback by construction); α=1 ⇒ takeover (explicit UI state).
-  - `multi_interest.py` — ComiRec-SA self-attention + ComiRec-DR capsule routing + MIND dynamic interest count (`K' = max(1,min(K,log₂|behaviors|))`).
-  - `eval.py` — LACE-style NDCG@k / Recall@k + category coverage + novelty.
-  - `synthetic_avito.py` — a small fake marketplace (12 life categories, 10 mentors with per-category taste) for storytelling experiments.
-  - `pipeline.py` — one shared experiment path (data → item2vec → mentor select → blend → evaluate).
-- **Experiments (thin CLI adapters):** `scripts/`
-  - `01_embedding_blending_movielens.py` — honest numbers on MovieLens ml-latest-small (real ratings). Run `--debug-users N` to reproduce a single-user debug (replaces the old `01b_*`).
-  - `02_multicategory_mentors_synthetic.py` — multi-category mentors on the synthetic set: coverage ↑ while relevance stays flat (do-no-harm + diversity proof).
-- **Numbers (on disk):** `data/test_results/*.json`
-  - MovieLens (120 warm users, mentor = closest genre-overlap user): NDCG@10 Δ **+0.019** (α=0.45) and **+0.025** (α=0.7); Recall@10 Δ **+0.007 / +0.016**. Negative deltas: none.
-  - Synthetic (60 users): category coverage Δ **+0.083** with relevance flat (0.000) — blending adds categories without harming relevance.
+That's the whole product idea: **visible, controllable influence, with an easy undo.**
 
-### Repo layout (navigate)
+And the natural next step — assign *different* mentors to *different parts of your life*: sneakers → your sneakerhead friend, home stuff → your designer friend, work gear → your techie friend. One person doesn't own your taste; your "mentor team" does.
+
+---
+
+## What's in this repository
 
 ```
 code-ground-truth/
-├── README.md                  ← you are here; the map
-├── GLOSSARY.md                ← domain vocabulary (Mentor, Lens, α, Category, Blend, …)
-├── AGENTS.md                  ← agent/engineering config (issue tracker, triage labels, domain docs)
-├── docs/
-│   ├── adr/                   ← architecture decisions (0001 blending-core, 0002 LensOperator)
-│   └── agents/                ← github-auth notes, eval plan, issue-tracker, domain, triage
-├── src/cs_core/               ← importable product core (torch-free, numpy only)
-├── scripts/                   ← thin runnable experiment CLIs
-├── applications/              ← research/taxonomy notebooks (torch/pyg) — the 6-technique story for the pitch
-├── data/test_results/         ← honest JSON numbers
-├── assets/                    ← figures for the site/slides
-├── index.html                 ← public landing (GitHub Pages)
-└── caught-and-shared-conscious-control-in-recommender-systems.pdf   ← the paper
+├── src/cs_core/        ← THE ENGINE: the actual code that blends tastes (pure Python, no heavy deps)
+├── scripts/            ← READY-TO-RUN experiments (the numbers below come from these)
+├── applications/       ← RESEARCH NOTEBOOKS: 6 different technical directions we explored (for the curious)
+├── data/test_results/  ← THE RESULTS: honest JSON numbers from the experiments
+├── docs/               ← HOW AND WHY we made decisions (glossary, ADR log)
+├── assets/  index.html ← the public landing page + figures
+└── README.md           ← you are here
 ```
 
-**Why two code styles?** `applications/` are the research notebooks (torch + torch-geometric) that tell the *taxonomy* story (Graph-based, Contrastive Alignment, Embedding Blending, Multi-Category Mentors). The shipped product core is `src/cs_core/` — deliberately torch-free so the blending math runs anywhere and can be unit-tested without a GPU stack. Techniques that graduate get ported into `src/cs_core/` behind the `LensOperator` seam (see ADR-0002).
+Not sure where to start?
+
+- **I want to see the numbers** → `data/test_results/`
+- **I want to run it myself** → `scripts/` (see "Run it" below)
+- **I want to understand the engine** → `src/cs_core/`
+- **I want the full technical background** → `docs/adr/`, `GLOSSARY.md`
+- **I want to see the whole research story** → `applications/` (notebooks)
 
 ---
 
-## Core Implementation Taxonomy
+## What we've already tested
 
-Regardless of the underlying architecture, the Caught & Shared concept can be realized through three universal strategies for injecting mentor influence:
+Two honest experiments are on disk in `data/test_results/`:
 
-## 1. Graph-based (Structural) Approaches
+**1. Real data: MovieLens** (100k real movie ratings).
+We took warm users, picked a "mentor" for each (someone whose taste overlaps theirs), and blended the mentor's taste in at 20–70%.
+Result: recommendation quality **went up, not down** — up to **+2.5% NDCG@10** at α=0.7, +1.9% at α=0.45, +0.2% at α=0.2. The more taste you borrow, the better the feed gets (within reason).
 
-We explicitly add mentor relationships into the graph. This can be done by transforming the original user-item bipartite graph into a heterogeneous multi-relational graph or by using alternative techniques that preserve bipartiteness.
+**2. Simulated marketplace** (12 life categories: sneakers, home, tech…).
+We gave a user a mentor for a category they barely interact with.
+Result: their feed's category coverage **grew (+8% of categories)** while relevance stayed flat — i.e. **blending adds new worlds to explore without breaking what already worked.** That's the "do no harm + discover more" proof.
 
-**Main variants**
-- **Heterogeneous Graph** — Direct user → mentor edges (most powerful signal)
-- **Virtual Proxy Items** — Represent each mentor as a special virtual item
-- **Dual Graph** — Separate bipartite and social graphs with later fusion
-- **MetaPath-based** — Information flows through predefined paths (e.g., `User → Mentor → Item`)
-
-**Strengths:** Strong, direct influence and natural propagation.
-**Weaknesses:** Varies by variant — from breaking bipartiteness to increased complexity.
-
-> **Status (2026-10):** kept as research appendix & use-case for the taxonomy. Not the product core (ADR-0001).
-
-## 2. Contrastive Alignment
-
-Instead of changing the graph, we add a contrastive objective during training that pulls the user’s embedding closer to their chosen mentor’s embedding in latent space, while pushing it away from random users.
-
-**Key idea**
-- Positive pair: *(user, mentor)*
-- Negative pairs: *(user, random users)*
-
-**Strengths**
-- Preserves original graph structure
-- Works with any neural model (Two‑Tower, GNNs, Transformers)
-- Creates meaningful semantic closeness between user and mentor
-
-**Weaknesses:** Influence is softer and requires mentor choice data during training.
-
-> **Status (2026-10):** useful as an *auxiliary training loss*, not a user-facing mechanism (ADR-0001).
-
-## 3. Embedding Blending (Composite) — ✅ the product core
-
-The simplest and most controllable method — directly blend user and mentor embeddings at inference time:
-
-```
-User_final = (1 - α) * User_emb + α * Mentor_emb
-```
-
-**Strengths**
-- Maximum user control and transparency
-- Extremely easy to implement and explain
-- Works on top of any existing model
-- Perfect for MVP and production
-
-**Weaknesses:** Post-processing approach (model doesn’t learn mentor relationships during training).
-
-> **Status (2026-10):** implemented in `src/cs_core/blend.py`, per-category α + multi-mentor + rollback-by-construction. This is THE thing we pitch: "we don't retrain your model; we blend embeddings at inference with user-controlled weights."
+> The honest caveat: these are offline experiments on a small scale — the mechanism works and nothing breaks, but "people feel more in control" still needs the user study that's next on the roadmap.
 
 ---
 
-## Influence Control (Product Feature)
+## Run it
 
-When choosing a mentor, users can select the depth of influence:
+Two commands, no GPU, no heavy installs (needs Python 3.10+ with numpy, pandas, gensim):
 
-- **Light (20%)** — Gentle nudge toward the mentor’s taste
-- **Balanced (45%)** — Nearly equal mix of both tastes
-- **Deep (70%)** — Strong immersion into the mentor’s style
+```bash
+# 1) Real-data experiment (MovieLens) — ~4 minutes
+python scripts/01_embedding_blending_movielens.py
 
-This gives users a clear sense of agency and reduces the fear of completely losing their own identity in recommendations.
+# 2) Storytelling experiment (synthetic marketplace) — seconds
+python scripts/02_multicategory_mentors_synthetic.py
+```
 
-Additionally, users can:
-- Temporarily try different influence levels
-- Revert to previous recommendation state ("Reset to my original taste")
-- Fine‑tune alpha manually if desired
+That's the whole engine: **blend two taste-vectors with a dial.** Everything else in the codebase exists to measure, explain, and improve that one move.
+
+There's also an interactive visual prototype (drag the α dial over a movie grid) — locally at the sibling folder `caught-shared-demo/demo/` (not yet part of this repo).
 
 ---
 
-## Future Growth: Conscious Recommendations & Multi‑Category Mentors
+## The bigger vision: Conscious Recommendations
 
-**Caught & Shared** is the first building block of a broader vision — **Conscious Recommendations**.
+Caught & Shared is the first step of a broader family of products — **Conscious Recommendations**: recommendation systems where the user is in control, can see what influences their feed, and can change or undo it at any time.
 
-In the future, users will be able to assign different mentors to different life categories (sneakers, outerwear, tech, home, workwear, etc.). This creates a personal **"Mentor Team"** where each sphere of life is guided by someone whose taste the user genuinely admires.
+- Today: one mentor, one dial, one undo button.
+- Next: a personal "Mentor Team" — different trusted people for different life categories.
+- Later: the same conscious layer applied to any feed you use — marketplace, music, video, news.
 
-This approach transforms recommendations from passive algorithmic output into a deeply personal, human‑curated experience.
+This turns recommendations from a passive black box into an **honest, human, explainable** experience.
+
+---
+
+## For the technically curious (the research map)
+
+We explored six ways to inject a mentor's taste into a recommender. Three families:
+
+1. **Changing the graph** — adding mentor connections directly into the user-item graph
+   (heterogeneous graph, dual graph, metapath, virtual proxy items).
+   *Strong but invasive: it changes the core model. Status: research appendix.*
+2. **Contrastive training** — pulling a user's embedding toward their mentor's during training.
+   *Softer influence, needs mentor data in training. Status: auxiliary option.*
+3. **Embedding blending** — mixing the taste vectors at recommendation time: `your_feed = (1-α)·you + α·mentor`. ✅
+   *Simple, instant, reversible, doesn't touch the existing system. **This is the product.***
+
+We keep all notebooks in `applications/` so the full story stays alive; the engine we ship and pitch is #3. The why-behind-each-choice is logged in `docs/adr/` — written for the next person (or future us) who asks "why did you choose this?"
+
+**Sources** (the science behind the choice): mentor-based cold-start (Brun et al. 2011), user control & satisfaction (Harper et al. 2015; Mysore et al. 2023), multi-interest user models (ComiRec 2020; GemiRec 2024), social learning for matters of taste (Analytis et al. 2018). Full provenance lives in the Obsidian ground-truth workspace.
+
+---
+
+*Previous versions of this README live in git history (`git log --oneline -- README.md`) — you can always roll back.*
