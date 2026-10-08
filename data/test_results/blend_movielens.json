@@ -1,0 +1,30 @@
+{
+  "summary": {
+    "alpha_0.2": {
+      "n_users": 120,
+      "ndcg10_delta_mean": 0.0024265221583663755,
+      "recall10_delta_mean": 0.001339285714285714,
+      "coverage_delta_mean": 0.0,
+      "novelty_delta_mean": 0.0
+    },
+    "alpha_0.45": {
+      "n_users": 120,
+      "ndcg10_delta_mean": 0.018904860314352474,
+      "recall10_delta_mean": 0.007235750360750361,
+      "coverage_delta_mean": 0.0,
+      "novelty_delta_mean": 0.0
+    },
+    "alpha_0.7": {
+      "n_users": 120,
+      "ndcg10_delta_mean": 0.024791695644083026,
+      "recall10_delta_mean": 0.016280363155363155,
+      "coverage_delta_mean": 0.0,
+      "novelty_delta_mean": 0.0
+    }
+  },
+  "alphas": [
+    0.2,
+    0.45,
+    0.7
+  ]
+}

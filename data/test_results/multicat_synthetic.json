@@ -1,0 +1,491 @@
+{
+  "rows": [
+    {
+      "user": "u0000",
+      "mentor": "m01",
+      "mentor_fav_cat": "home",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0002",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.417,
+      "coverage_after": 0.5,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0003",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0004",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.417,
+      "coverage_after": 0.5,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0005",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0006",
+      "mentor": "m02",
+      "mentor_fav_cat": "tech",
+      "coverage_before": 0.583,
+      "coverage_after": 0.667,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0007",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0008",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.583,
+      "coverage_after": 0.667,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0009",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0010",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.5,
+      "coverage_after": 0.583,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0011",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.5,
+      "coverage_after": 0.583,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0012",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.083,
+      "coverage_after": 0.167,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0013",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0014",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.5,
+      "coverage_after": 0.583,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0015",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.417,
+      "coverage_after": 0.5,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0016",
+      "mentor": "m03",
+      "mentor_fav_cat": "work",
+      "coverage_before": 0.75,
+      "coverage_after": 0.833,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0017",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0018",
+      "mentor": "m03",
+      "mentor_fav_cat": "work",
+      "coverage_before": 0.5,
+      "coverage_after": 0.583,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0019",
+      "mentor": "m04",
+      "mentor_fav_cat": "gifts",
+      "coverage_before": 0.667,
+      "coverage_after": 0.75,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0020",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0021",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0022",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0023",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.417,
+      "coverage_after": 0.5,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0024",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.417,
+      "coverage_after": 0.5,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0025",
+      "mentor": "m03",
+      "mentor_fav_cat": "work",
+      "coverage_before": 0.417,
+      "coverage_after": 0.5,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0026",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0027",
+      "mentor": "m04",
+      "mentor_fav_cat": "gifts",
+      "coverage_before": 0.5,
+      "coverage_after": 0.583,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0028",
+      "mentor": "m01",
+      "mentor_fav_cat": "home",
+      "coverage_before": 0.583,
+      "coverage_after": 0.667,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0029",
+      "mentor": "m01",
+      "mentor_fav_cat": "home",
+      "coverage_before": 0.583,
+      "coverage_after": 0.667,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0030",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0031",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0032",
+      "mentor": "m01",
+      "mentor_fav_cat": "home",
+      "coverage_before": 0.5,
+      "coverage_after": 0.583,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0033",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0034",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0035",
+      "mentor": "m03",
+      "mentor_fav_cat": "work",
+      "coverage_before": 0.5,
+      "coverage_after": 0.583,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0036",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.167,
+      "coverage_after": 0.25,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0037",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.5,
+      "coverage_after": 0.583,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0038",
+      "mentor": "m01",
+      "mentor_fav_cat": "home",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0039",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0040",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0041",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.167,
+      "coverage_after": 0.25,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0042",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0043",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0044",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.167,
+      "coverage_after": 0.25,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0045",
+      "mentor": "m03",
+      "mentor_fav_cat": "work",
+      "coverage_before": 0.417,
+      "coverage_after": 0.5,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0046",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.417,
+      "coverage_after": 0.5,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0047",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0048",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0049",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0050",
+      "mentor": "m02",
+      "mentor_fav_cat": "tech",
+      "coverage_before": 0.583,
+      "coverage_after": 0.667,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0051",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.167,
+      "coverage_after": 0.25,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0052",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.417,
+      "coverage_after": 0.5,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0053",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.333,
+      "coverage_after": 0.417,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0054",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.417,
+      "coverage_after": 0.5,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0055",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.5,
+      "coverage_after": 0.583,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0056",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.667,
+      "coverage_after": 0.75,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0057",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.25,
+      "coverage_after": 0.333,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0058",
+      "mentor": "m00",
+      "mentor_fav_cat": "sneakers",
+      "coverage_before": 0.583,
+      "coverage_after": 0.667,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0059",
+      "mentor": "m01",
+      "mentor_fav_cat": "home",
+      "coverage_before": 0.5,
+      "coverage_after": 0.583,
+      "alpha": 0.6
+    },
+    {
+      "user": "u0060",
+      "mentor": "m04",
+      "mentor_fav_cat": "gifts",
+      "coverage_before": 0.667,
+      "coverage_after": 0.75,
+      "alpha": 0.6
+    }
+  ],
+  "alpha": 0.6,
+  "summary": {
+    "n_users": 60,
+    "coverage_delta_mean": 0.0833,
+    "relevance_delta_mean": 0.0,
+    "novelty_delta_mean": 0.0
+  }
+}
