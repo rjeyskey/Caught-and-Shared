@@ -51,16 +51,21 @@ class EmbeddingBlend:
         mentors = [np.asarray(m, dtype=np.float64) for m in mentor_embs]
 
         if user.ndim == 2:
-            # per-interest: broadcast the same (or per-mentor) alpha column-wise
+            # per-interest (K,D): broadcast the same (or per-mentor) alpha column-wise,
+            # and clamp so the mentor share never leaves the convex hull of tastes.
             if np.isscalar(alpha):
                 alphas = np.full(len(mentors), float(alpha))
             else:
                 alphas = np.asarray(alpha, dtype=np.float64).reshape(-1)
+            total = alphas.sum()
+            if total > 1.0:
+                alphas = alphas / total
             result = (1.0 - alphas.sum()) * user
             for a, m in zip(alphas, mentors):
                 result = result + a * m
             return result
 
+        # 1D (D,): scalar-per-mentor or sequence
         alphas = (
             np.full(len(mentors), float(alpha))
             if np.isscalar(alpha)
@@ -68,7 +73,6 @@ class EmbeddingBlend:
         )
         total = alphas.sum()
         if total > 1.0:
-            # clamp the mentor share so we never leave the convex hull of tastes
             alphas = alphas / total
         result = (1.0 - alphas.sum()) * user
         for a, m in zip(alphas, mentors):
