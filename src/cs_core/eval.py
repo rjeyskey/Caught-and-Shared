@@ -1,19 +1,18 @@
 """Ranking-quality evaluation — the honest number cruncher.
 
 LACE-style: NDCG@k, Recall@k on held-out interactions + category coverage / novelty
-for a single user. Small, torch-free, numpy-only (sklearn for the heavy lifting of
-ranking metrics isn't needed — pure formulas here).
+for a single user. Tuple-ordered: (item_ids ordered by score desc, relevance per item).
+
+Category/novelty now take *item IDs* + an item→category map, so callers stop
+pre-cooking strings; the evaluation owns the category logic (deepens the seam).
 """
 
 from __future__ import annotations
 
 import math
+from typing import Sequence
 
 import numpy as np
-
-
-def _dcg(ranks: list[int]) -> float:
-    return sum(1.0 / math.log2(i + 2) for i in ranks)
 
 
 def ndcg_at_k(relevance: np.ndarray, k: int) -> float:
@@ -35,12 +34,14 @@ def recall_at_k(relevance: np.ndarray, k: int, total_rel: int | None = None) -> 
     return int(top.sum()) / total_rel
 
 
-def category_coverage(recs: list[str]) -> float:
+def category_coverage(categories: Sequence[str]) -> float:
     """Share of *distinct* categories present in the recommendation list."""
-    return len(set(recs)) / len(recs) if recs else 0.0
+    if not categories:
+        return 0.0
+    return len(set(categories)) / len(categories)
 
 
-def novelty(items: list[str], seen: set[str]) -> float:
+def novelty(items: Sequence, seen: set) -> float:
     """Share of recommended items the user has never interacted with."""
     if not items:
         return 0.0
@@ -50,18 +51,27 @@ def novelty(items: list[str], seen: set[str]) -> float:
 def evaluate_ranking(
     scores: np.ndarray,
     relevance: np.ndarray,
-    rec_items: list[str],
-    seen: set[str],
+    item_ids: Sequence,
+    seen: set,
+    category_of: dict | None = None,
     k_list: tuple[int, ...] = (5, 10, 20),
 ) -> dict:
-    """One-stop evaluation: NDCG/Recall at each k + category coverage + novelty."""
+    """One-stop evaluation: NDCG/Recall at each k + category coverage + novelty.
+
+    item_ids: ordered parallel to `scores`/`relevance`.
+    seen: set of item ids the user has already interacted with (for novelty).
+    category_of: optional item→category map. When provided, category coverage is
+    computed from the top-k categories; else coverage is omitted.
+    """
     order = np.argsort(-scores)  # descending score
     rel = relevance[order]
-    recs = [rec_items[i] for i in order]
+    items = [item_ids[i] for i in order]
     out = {}
     for k in k_list:
         out[f"ndcg@{k}"] = ndcg_at_k(rel, k)
         out[f"recall@{k}"] = recall_at_k(rel, k)
-    out["category_coverage"] = category_coverage(recs)
-    out["novelty"] = novelty(recs, seen)
+    if category_of is not None:
+        cats = [category_of.get(x, "?") for x in items]
+        out["category_coverage"] = category_coverage(cats)
+    out["novelty"] = novelty(items, seen)
     return out

@@ -15,7 +15,12 @@ import numpy as np
 
 
 class LensOperator(Protocol):
-    """Single seam every influence technique implements (ADR-0002)."""
+    """Single seam every influence technique implements (ADR-0002).
+
+    EmbeddingBlend is the MVP implementation. Future techniques (ProxyBlend via
+    Virtual Proxy Items, contrastive-trained blends, graph-leveraged vecs) implement
+    the same Protocol and can be swapped in without touching ingest/rank/respond.
+    """
 
     def blend(
         self,
@@ -38,6 +43,10 @@ class EmbeddingBlend:
     """Embedding Blending — the MVP operator (paper §3.3, ADR-0001).
 
     final = (1 - Σα) * user + Σ(α_i * mentor_i)
+
+    The class is the ONLY public surface of this module. Callers construct
+    `EmbeddingBlend()` (stateless but honest); there is deliberately no module-level
+    convenience function, so the α-clamp logic cannot be bypassed (ADR-0002).
     """
 
     def blend(
@@ -51,46 +60,27 @@ class EmbeddingBlend:
         mentors = [np.asarray(m, dtype=np.float64) for m in mentor_embs]
 
         if user.ndim == 2:
-            # per-interest (K,D): broadcast the same (or per-mentor) alpha column-wise,
-            # and clamp so the mentor share never leaves the convex hull of tastes.
-            if np.isscalar(alpha):
-                alphas = np.full(len(mentors), float(alpha))
-            else:
-                alphas = np.asarray(alpha, dtype=np.float64).reshape(-1)
-            total = alphas.sum()
-            if total > 1.0:
-                alphas = alphas / total
-            result = (1.0 - alphas.sum()) * user
-            for a, m in zip(alphas, mentors):
-                result = result + a * m
-            return result
+            # per-interest (K,D): scalar-per-mentor or sequence; clamp to convex hull.
+            return self._blend_vectors(user, mentors, alpha)
+        return self._blend_vectors(user, mentors, alpha)
 
-        # 1D (D,): scalar-per-mentor or sequence
-        alphas = (
-            np.full(len(mentors), float(alpha))
-            if np.isscalar(alpha)
-            else np.asarray(alpha, dtype=np.float64).reshape(-1)
-        )
+    @staticmethod
+    def _blend_vectors(
+        user: np.ndarray,
+        mentors: list[np.ndarray],
+        alpha: float | Sequence[float],
+    ) -> np.ndarray:
+        if np.isscalar(alpha):
+            alphas = np.full(len(mentors), float(alpha))
+        else:
+            alphas = np.asarray(alpha, dtype=np.float64).reshape(-1)
         total = alphas.sum()
         if total > 1.0:
-            alphas = alphas / total
+            alphas = alphas / total  # stay inside the convex hull of tastes
         result = (1.0 - alphas.sum()) * user
         for a, m in zip(alphas, mentors):
             result = result + a * m
         return result
-
-
-_EMPTY = EmbeddingBlend()
-
-
-def blend(
-    user_emb: np.ndarray,
-    mentor_embs: Sequence[np.ndarray],
-    alpha: float | Sequence[float],
-    domain: str = "global",
-) -> np.ndarray:
-    """Module-level convenience — the level the design surface (Figma/Paper JSON) will call."""
-    return _EMPTY.blend(user_emb, mentor_embs, alpha, domain)
 
 
 def rollout_checkpoint(lens_state: dict) -> dict:

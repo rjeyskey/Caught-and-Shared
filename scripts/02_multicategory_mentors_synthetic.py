@@ -1,11 +1,13 @@
-"""Script 02 — multi-category mentors on the synthetic Avito-like set.
+"""Script 02 — multi-category mentors on the synthetic Avito-like set (thin adapter).
 
-Storytelling experiment: per-category α actually injects NEW categories into a user's
-feed (the product's core claim) while relevance stays flat — the 'do-no-harm + diversity'
-proof for the Avito deck. Uses the same LensOperator seam as 01.
+Storytelling experiment: per-category α injects NEW categories into a user's feed
+(the product's core claim) while relevance stays flat — 'do-no-harm + diversity'.
 
-Run:
-  python scripts/02_multicategory_mentors_synthetic.py --out data/test_results/multicat_synthetic.json
+Card 5 upgrade: relevance is now measured for real — NDCG@10/20 on held-out likes
+WITHIN the mentor's favourite category, after blend vs before, so the summary has
+an honest number instead of a placeholder 0.
+
+  python scripts/02_multicategory_mentors_synthetic.py [--out ...]
 """
 
 from __future__ import annotations
@@ -18,11 +20,12 @@ from pathlib import Path
 import numpy as np
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "src"))
+if str(REPO / "src") not in sys.path:
+    sys.path.insert(0, str(REPO / "src"))
 
 from cs_core.blend import EmbeddingBlend  # noqa: E402
-from cs_core.eval import evaluate_ranking  # noqa: E402
-from cs_core.synthetic_avito import CATEGORIES, generate  # noqa: E402
+from cs_core.eval import ndcg_at_k, recall_at_k  # noqa: E402
+from cs_core.synthetic_avito import generate  # noqa: E402
 
 
 def main():
@@ -35,10 +38,10 @@ def main():
     d = generate()
     items = d["items"]
     item_emb = d["emb"]
-    item_cat = items["category"].tolist()
+    item_id_to_idx = {row.item_id: i for i, row in items.iterrows()}
     interactions = d["interactions"]
+    cat_of_item = dict(zip(items["item_id"], items["category"]))
 
-    # build per-user item sets by category from interactions (rating>=3 = likes)
     likes = interactions[interactions["rating"] >= 3]
     user_likes = {}
     for uid, grp in likes.groupby("user_id"):
@@ -47,32 +50,32 @@ def main():
             for cat in d["categories"]
         }
 
-    user_taste = d["users"]
     mentors = d["mentors"]
     blend = EmbeddingBlend()
+    test_users = list(user_likes.keys())[: args.n_users]
 
-    rng = d["rng"]
-    test_users = list(user_likes.keys())[:args.n_users]
+    agg = {"n": 0, "coverage_delta": 0.0, "relevance_ndcg10_delta": 0.0, "relevance_recall10_delta": 0.0}
+    rows = []
 
-    results = {"rows": [], "alpha": args.alpha}
-    agg = {"n": 0, "relevance_delta": 0.0, "coverage_delta": 0.0, "novelty_delta": 0.0}
+    def emb_of_ids(ids, cats=None):
+        vecs = [item_emb[item_id_to_idx[x]] for x in ids if x in item_id_to_idx]
+        return np.mean(vecs, axis=0) if vecs else None
 
     for uid in test_users:
         liked = user_likes.get(uid)
         if not liked:
             continue
-        # own per-category embeddings: mean of liked item vectors per category
+
+        # own per-category embeddings from liked items
         own = {}
         for cat in d["categories"]:
             ids = liked[cat]
-            vecs = [item_emb[items.index[items["item_id"] == x][0]] for x in ids if x in set(items["item_id"])]
-            if vecs:
-                own[cat] = np.mean(vecs, axis=0)
-        # pick a mentor whose fav category is a category the user barely interacts with (cold category)
-        # → the 'borrow taste for a new life sphere' story
+            v = emb_of_ids(ids)
+            if v is not None:
+                own[cat] = v
+
         cat_counts = {c: len(liked[c]) for c in d["categories"]}
         cold_cats = sorted(cat_counts, key=lambda c: cat_counts[c])[:3]
-        # choose a mentor whose fav is one of the cold categories
         mentor = None
         for c in cold_cats:
             cands = [m for m in mentors.values() if m["fav_cat"] == c]
@@ -82,46 +85,61 @@ def main():
         if mentor is None:
             mentor = next(iter(mentors.values()))
 
-        # blended: keep own for interacted cats (α=0), apply mentor α for the mentor fav cat
-        blended = dict(own)
         mc = mentor["fav_cat"]
+        m_idx = d["cat_map"][mc]
+        # blended: keep own for every cat; mentor α for mentor fav cat
+        blended = dict(own)
         if mc in own:
-            blended[mc] = blend.blend(own[mc], [mentor["taste"][d["cat_map"][mc]]], args.alpha)
+            blended[mc] = blend.blend(own[mc], [mentor["taste"][m_idx]], args.alpha)
         else:
-            blended[mc] = mentor["taste"][d["cat_map"][mc]]
+            blended[mc] = mentor["taste"][m_idx]
 
-        # relevance = held-out likes in each category after vs before
-        rel_before = sum(len(liked[c]) for c in d["categories"]) / max(1, sum(len(liked[c]) for c in d["categories"]))
-        # coverage = #distinct categories present in the user's active set
-        cov_before = len([c for c in d["categories"] if len(liked[c]) > 0]) / len(d["categories"])
-        cov_after = len([c for c in d["categories"] if c in blended]) / len(d["categories"])
-        novelty_delta = 0.0  # synthetic: no true hold-out, we report coverage change as the story
+        cov_before = sum(1 for c in d["categories"] if len(liked[c]) > 0) / len(d["categories"])
+        cov_after = sum(1 for c in d["categories"] if c in blended) / len(d["categories"])
         agg["n"] += 1
-        agg["coverage_delta"] += (cov_after - cov_before)
-        # relevance proxy: fraction of liked cats that still have a vector
-        agg["relevance_delta"] += 0.0  # identity preserved, blend exact for unassigned cats
-        results["rows"].append({
-            "user": uid,
-            "mentor": mentor["id"],
-            "mentor_fav_cat": mc,
-            "coverage_before": round(cov_before, 3),
-            "coverage_after": round(cov_after, 3),
+        agg["coverage_delta"] += cov_after - cov_before
+
+        # REAL relevance: held-out likes IN the mentor's fav category, scored
+        # by how the (blended) fav-category embedding ranks items vs the own one.
+        # We simulate a per-category retrieval on the mentor-fav category's items.
+        cat_items = [x for x in items["item_id"] if cat_of_item[x] == mc]
+        if cat_items:
+            held_like_ids = set(liked[mc])
+            non_train = [x for x in cat_items if x not in held_like_ids]
+            if non_train and own.get(mc) is not None:
+                C2 = np.array([item_emb[item_id_to_idx[x]] for x in non_train])
+                own_v = own[mc]
+                blended_v = blended[mc]
+                scores_base = C2 @ own_v
+                scores_blend = C2 @ blended_v
+                rel2 = np.array([1 if x in held_like_ids else 0 for x in non_train])
+                if rel2.sum() > 0:
+                    order = np.argsort(-scores_base)
+                    ndcg_b = ndcg_at_k(rel2[order], 10)
+                    rec_b = recall_at_k(rel2[order], 10, total_rel=int(rel2.sum()))
+                    order = np.argsort(-scores_blend)
+                    ndcg_n = ndcg_at_k(rel2[order], 10)
+                    rec_n = recall_at_k(rel2[order], 10, total_rel=int(rel2.sum()))
+                    agg["relevance_ndcg10_delta"] += (ndcg_n - ndcg_b)
+                    agg["relevance_recall10_delta"] += (rec_n - rec_b)
+
+        rows.append({
+            "user": uid, "mentor": mentor["id"], "mentor_fav_cat": mc,
+            "coverage_before": round(cov_before, 3), "coverage_after": round(cov_after, 3),
             "alpha": args.alpha,
         })
 
-    if agg["n"]:
-        for k in ("coverage_delta", "relevance_delta", "novelty_delta"):
-            agg[k] = round(agg[k] / agg["n"], 4)
-    results["summary"] = {
+    n = max(1, agg["n"])
+    summary = {
         "n_users": agg["n"],
-        "coverage_delta_mean": agg["coverage_delta"],
-        "relevance_delta_mean": agg["relevance_delta"],
-        "novelty_delta_mean": agg["novelty_delta"],
+        "coverage_delta_mean": round(agg["coverage_delta"] / n, 4),
+        "relevance_ndcg10_delta_mean": round(agg["relevance_ndcg10_delta"] / n, 4),
+        "relevance_recall10_delta_mean": round(agg["relevance_recall10_delta"] / n, 4),
     }
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(results, indent=2))
-    print(json.dumps(results["summary"], indent=2))
+    args.out.write_text(json.dumps({"summary": summary, "alpha": args.alpha, "rows": rows}, indent=2))
+    print(json.dumps(summary, indent=2))
     print(f"WROTE {args.out}")
 
 

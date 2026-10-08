@@ -9,14 +9,14 @@
     },
     "alpha_0.45": {
       "n_users": 120,
-      "ndcg10_delta_mean": 0.018904860314352474,
+      "ndcg10_delta_mean": 0.01890486031435247,
       "recall10_delta_mean": 0.007235750360750361,
       "coverage_delta_mean": 0.0,
       "novelty_delta_mean": 0.0
     },
     "alpha_0.7": {
       "n_users": 120,
-      "ndcg10_delta_mean": 0.024791695644083026,
+      "ndcg10_delta_mean": 0.024791695644083022,
       "recall10_delta_mean": 0.016280363155363155,
       "coverage_delta_mean": 0.0,
       "novelty_delta_mean": 0.0

@@ -1,4 +1,11 @@
 {
+  "summary": {
+    "n_users": 60,
+    "coverage_delta_mean": 0.0833,
+    "relevance_ndcg10_delta_mean": 0.0,
+    "relevance_recall10_delta_mean": 0.0
+  },
+  "alpha": 0.6,
   "rows": [
     {
       "user": "u0000",
@@ -480,12 +487,5 @@
       "coverage_after": 0.75,
       "alpha": 0.6
     }
-  ],
-  "alpha": 0.6,
-  "summary": {
-    "n_users": 60,
-    "coverage_delta_mean": 0.0833,
-    "relevance_delta_mean": 0.0,
-    "novelty_delta_mean": 0.0
-  }
+  ]
 }
