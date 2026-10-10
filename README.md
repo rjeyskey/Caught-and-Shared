@@ -51,21 +51,21 @@ code-ground-truth/
 
 Graph-based and contrastive approaches stay in `applications/` as the research story — they're stronger signals in theory, but they touch the core model, which we deliberately avoid.
 
-## What we've measured so far
+## What the code checks so far (offline mechanism checks)
 
-| Experiment | What it shows |
+| Check | What it shows |
 |---|---|
-| MovieLens (100k real ratings) | Blending a mentor's taste in **improves recommendation quality** (NDCG@10 up +2.5% at α=0.7, +1.9% at α=0.45), no degradation at any α |
-| Synthetic marketplace (12 categories) | Adding a mentor for a "cold" category **grows feed coverage (+8% categories) without hurting relevance** — new worlds to explore, nothing broken |
+| MovieLens (100k real ratings) | Blending a *similar* user's taste in doesn't degrade ranking and slightly helps (NDCG@10 +2.5% at α=0.7) — the mechanism is safe at scale |
+| Synthetic marketplace (12 categories) | Adding a mentor for a "cold" category grows feed coverage (+8% categories) without hurting relevance |
 
-Both results are on disk in `data/test_results/` and reproducible with two commands:
+Both are reproducible with two commands:
 
 ```bash
 python scripts/01_embedding_blending_movielens.py
 python scripts/02_multicategory_mentors_synthetic.py
 ```
 
-Honest caveat: these are offline experiments. The "users feel more in control" claim is the next step — a small user study (the protocol is ready in `docs/`).
+Honest caveat: these check the *mechanism*, not the *product*. The real C&S claim is about a user explicitly choosing a person they trust — that can't be faked by matching similar users (that's what ordinary recommenders already do). The real evidence comes from a small user study with real mentor choice — full protocol in `docs/user-study-plan.md`, it's the next milestone.
 
 ## Core Implementation Taxonomy
 
